@@ -1,74 +1,87 @@
-# Data Engineering Challenge NetworkAndesAI
+# Data Engineering Challenge - 42Hacks
 
-Welcome to the data engineering challenge, your goal is to extract, transform and make data available to other users trough and API. 
+Welcome to the data engineering challenge! Your goal is to extract, transform, and make data available to other users through an API.
 
-The challenge aims to find the closest airport for a list of 100,000 users. To accomplish this you'll be able to retrieve a json with the position of the 100,000 users from the following [REST API](https://sccr8pgns0.execute-api.us-east-1.amazonaws.com/dev/locations). You'll need to retrieve each data point using the following syntax.
+## Challenge Objective
 
-``` python 
-requests.get('https://sccr8pgns0.execute-api.us-east-1.amazonaws.com/dev/locations/'+str(user_id)).json()["data"]
+The objective of this challenge is to find the closest airport for a list of 100,000 users. You will retrieve user location data from a provided REST API and match each user to their nearest airport from a dataset of registered airports.
+
+## Steps to Complete the Challenge
+
+### 1. Retrieve User Locations
+You can access the user location data (containing user ID, longitude, and latitude) from the following [REST API](https://sccr8pgns0.execute-api.us-east-1.amazonaws.com/dev/locations). Each data point can be retrieved using the following syntax:
+
+```python
+requests.get('https://sccr8pgns0.execute-api.us-east-1.amazonaws.com/dev/locations/' + str(user_id)).json()["data"]
 ```
- Each data point contains an user id, longitude and latitude values.
-
-To find the closest airports please use the list of registered airports in the [OurAirports](https://ourairports.com/) webpage. There you'll be able to find a dataset containing information on all airports on that site. That file is called **airports.csv**. This datafile contains the following schema: "id","ident","type","name","latitude_deg","longitude_deg","elevation_ft","continent","iso_country","iso_region","municipality","scheduled_service","gps_code","iata_code","local_code","home_link","wikipedia_link","keywords". 
-
-
 <p align="center">
   <img src="./assets/airport_324754607.jpeg" />
 </p>
 
-## Context 
-------
-Data engineering is the backbone of any tech company that relies on data. They're the one in charge that data is ready for consumption not only for the data scientists in the company but also for the final users. Creating a system that provides data reliably is not an easy task at all. It requires detailed knowledge of matematical transformations, set theory and software engineering skills.
+### 2. Retrieve Airport Data
+Use the dataset from the [OurAirports](https://ourairports.com/) webpage. The dataset, named **airports.csv**, contains the following schema:
+- "id"
+- "ident"
+- "type"
+- "name"
+- "latitude_deg"
+- "longitude_deg"
+- "elevation_ft"
+- "continent"
+- "iso_country"
+- "iso_region"
+- "municipality"
+- "scheduled_service"
+- "gps_code"
+- "iata_code"
+- "local_code"
+- "home_link"
+- "wikipedia_link"
+- "keywords"
 
-Being a data engineer puts you in the center of both worlds: Backend engineering and data science. A data engineer is able to analyze big loads of data with high accuracy and efficiency. This challenge is aimed to challenge you to work with data that comes from difference sources and requires some special techniques to make it efficient to work with it. 
+### 3. Create a Filtered Dataset
+Generate a CSV file named **airports_w_wiki.csv** containing only the airports that have a Wikipedia page. This file must be uploaded to your GitHub repository.
 
-## Deliverable
-------
-Your deliverables are:
-1. A csv file containing only the airports with wikipedia page. This data file must be called **airports_w_wiki.csv** and be uploaded in your github. 
-2. A REST API that retrieves the closest airport for each user, and that allows the user to find the wikipedia page of it's closest airport by introducing their user id. 
+### 4. Build the API
+Develop a REST API with the following functionality:
+1. Retrieve the closest airport for a user: 
+   - Endpoint: **/nearest_airports/<user_id>**
+   - Response: JSON containing the "airport_id" of the nearest airport.
+2. Retrieve the Wikipedia page for the closest airport:
+   - Endpoint: **/nearest_airports_wikipedia/<user_id>**
+   - Response: JSON containing the "wikipedia_page" URL of the nearest airport.
 
-As we're only interested into the airports with wikipedia pages, therefore we want you to create first a datafile containing only the airports with wikipedia page called **airports_w_wiki.csv**. This file must be uploaded into your repository. 
+### 5. Database Integration
+Create a database that stores 100,000 user points with fields "user_id" and "airport_id". Ensure your API queries this database efficiently.
 
-After that we want you to create an API that returns the closest airport for each user. This API must be conected to a database containg 100,000 points with two fields: "user_id" and "airport_id". Then we must be able retrieve the data using the route **/nearest_airports/<user_id>**
+## Deliverables
+1. **airports_w_wiki.csv**: Upload this file to your GitHub repository.
+2. **REST API**: The API should fulfill the endpoints described above.
 
-Finally, this same API must also allow the user to query the wikipedia page of it's nearest aiport by introducing their user id as follows **/nearest_airports_wikipedia/<user_id>**. Then the api should return a json with the field "wikipedia_page" that contains the url of the airport wikipedia page.
+## Evaluation Criteria
+Your solution will be evaluated based on the accuracy and efficiency of your code, using a provided **eval.py** script. Ensure your API can retrieve data with the following commands:
 
-## Evaluation
------
-We will evaluate your code accuracy against the ground truth for the closest airports. We will do this using a **eval.py** script. This script will only need to change the **BASE_PATH** constant to work with your API, therefore be sure that your API is able to retrieve data with the following comands. 
-``` python 
-requests.get(BASE_PATH+'/nearest_airports/<user_id>').json()["data"]["airport_id"]
+```python
+requests.get(BASE_PATH + '/nearest_airports/<user_id>').json()["data"]["airport_id"]
 ```
-To retrieve the closest airport id 
-
-``` python 
-requests.get(BASE_PATH+'/nearest_airports_wikipedia/<user_id>').json()["data"]["wikipedia_page"]
+```python
+requests.get(BASE_PATH + '/nearest_airports_wikipedia/<user_id>').json()["data"]["wikipedia_page"]
 ```
-To retrieve the wikipedia page for the closest airport.
 
-Moreover, we will provide some test files so you can test the accuracy of your code. However, we will use the complete dataset in the evaluation part to prove that your code really works.
-
-Your solution will weight 60% of the decision and your interview 40%. We will have the following weights for your calification matrix:
-
-## Matrix
------
-| Challenge | Excellent  | Good | Satisfactory |  Insufficient  |
+### Scoring Matrix
+| Challenge | Excellent | Good | Satisfactory | Insufficient |
 |-------------------------------|-------------|---------------|--------------|--------------------------|
-|  Compute list of airports with wikipedia page  | **10 points** </br> </br> - All the airport ids with wikipedia page are in the script </br> - The code is clean and efficient  | **6 points** </br> </br> - All the airport ids with wikipedia page are in the script </br> </br> - the code is not efficient or easy to read |**4 points** </br> </br> - The list of airports is incomplete or include airports without wikipedia page  </br> - The code is not efficent|**0 points** </br> </br>  - The solution is wrong</br> </br>    |
-|  API retrieving the closest airport for each user  | **50 points** </br> </br> - All the airport ids correspond to the closest airport </br> - The code is clean and efficient  | **40 points** </br> </br> - All the airport ids correspond to the closest airport </br> </br> - the code is not efficient or easy to read |**20 points** </br> </br> - The list of airports is incomplete or include wrong aiports ids  </br> - The code is not efficent|**0 points** </br> </br>  The solution is wrong</br> </br>  |
-|  API retrieving the wikipedia page for the user's closest airport  | **40 points** </br> </br> - All the airport wikipedia pages correspond to the closest airport </br> </br>  - The code is clean and efficient  | **30 points** </br> </br> - All the airport ids correspond to the closest airport </br> </br> - the code is not efficient or easy to read |**15 points** </br> </br> - The list of airports is incomplete or include wrong aiports ids  </br> - The code is not efficent|**0 points** </br> </br> - The solution is wrong</br> </br>    |
+| Compute list of airports with Wikipedia page | **10 points** <br> - All the airport ids with Wikipedia page are in the script <br> - The code is clean and efficient | **6 points** <br> - All the airport ids with Wikipedia page are in the script <br> - The code is not efficient or easy to read | **4 points** <br> - The list of airports is incomplete or includes airports without Wikipedia page <br> - The code is not efficient | **0 points** <br> - The solution is wrong |
+| API retrieving the closest airport for each user | **50 points** <br> - All the airport ids correspond to the closest airport <br> - The code is clean and efficient | **40 points** <br> - All the airport ids correspond to the closest airport <br> - The code is not efficient or easy to read | **20 points** <br> - The list of airports is incomplete or includes wrong airport ids <br> - The code is not efficient | **0 points** <br> - The solution is wrong |
+| API retrieving the Wikipedia page for the user's closest airport | **40 points** <br> - All the airport Wikipedia pages correspond to the closest airport <br> - The code is clean and efficient | **30 points** <br> - All the airport ids correspond to the closest airport <br> - The code is not efficient or easy to read | **15 points** <br> - The list of airports is incomplete or includes wrong airport ids <br> - The code is not efficient | **0 points** <br> - The solution is wrong |
 
-Hints
-------
-- Remember that latitude and longitude are degrees in a sphere, therefore do not use a 2D plane to find the closest airport unless you have already projected the coordinates. 
-- You can use the [Haversine formula](https://en.wikipedia.org/wiki/Haversine_formula) to find the distance between two points in a sphere.
-- To get responses faster parallelize your code to focus on computing locations.
-- Comparing all the points is not the most efficient way to find the closest neighbor.
-- As the API have a limited reading capacity limit your parallel requests such that you perform around 60 reads per second.
-- Program your script to handle errors in case you receive a bad http response. In this case you can speed your code to handle 344 reads per second.
-- Use inner joins to retrieve your data.
+## Hints
+- Remember to consider the spherical nature of geographic coordinates. Use the [Haversine formula](https://en.wikipedia.org/wiki/Haversine_formula) for distance calculations.
+- Parallelize your code to improve performance.
+- As the API has a limited reading capacity limit your parallel requests such that you perform around 60 reads per second.
+- Program your script to handle errors in case you receive a bad http response. In such a case you can speed your code to handle 344 reads per second.
+- Handle errors gracefully in case of bad HTTP responses.
+- Use inner joins to efficiently retrieve data.
 
-[Application form](https://forms.gle/ukxQnXPpmGjwSgfr6)
--------
-Use the link to apply for the role, deadline 21th of January, 2022
+## Submission
+When finished, send an email to nicolas@42hacks.com with a link to your GitHub repository, which should include the API path in the README and the **airports_w_wiki.csv** file attached. Good luck!
