@@ -12,7 +12,7 @@ The objective of this challenge is to find the closest airport for a list of 100
 You can access the user location data (containing user ID, longitude, and latitude) from the following [REST API](https://sccr8pgns0.execute-api.us-east-1.amazonaws.com/dev/locations). Each data point can be retrieved using the following syntax:
 
 ```python
-requests.get('https://sccr8pgns0.execute-api.us-east-1.amazonaws.com/dev/locations/' + str(user_id)).json()["data"]
+requests.get('https://sccr8pgns0.execute-api.us-east-1.amazonaws.com/dev/locations/' + str(user_id)).json()
 ```
 <p align="center">
   <img src="./assets/airport_324754607.jpeg" />
@@ -62,10 +62,10 @@ Create a database that stores 100,000 user points with fields "user_id" and "air
 Your solution will be evaluated based on the accuracy and efficiency of your code, using a provided **eval.py** script. Ensure your API can retrieve data with the following commands:
 
 ```python
-requests.get(BASE_PATH + '/nearest_airports/<user_id>').json()["data"]["airport_id"]
+requests.get(BASE_PATH + '/nearest_airports/<user_id>').json()["airport_id"]
 ```
 ```python
-requests.get(BASE_PATH + '/nearest_airports_wikipedia/<user_id>').json()["data"]["wikipedia_page"]
+requests.get(BASE_PATH + '/nearest_airports_wikipedia/<user_id>').json()["wikipedia_page"]
 ```
 
 ### Scoring Matrix
