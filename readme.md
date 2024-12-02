@@ -1,6 +1,6 @@
-# Data Engineering Challenge - 42Hacks
+# Engineering Challenge - 42Hacks
 
-Welcome to the data engineering challenge! Your goal is to extract, transform, and make data available to other users through an API.
+Welcome to the engineering challenge! Your goal is to extract, transform, and make data available to other users through an API.
 
 ## Challenge Objective
 
